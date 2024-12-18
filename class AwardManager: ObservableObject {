@@ -1,0 +1,48 @@
+import Foundation
+
+class AwardManager: ObservableObject {
+    @Published var records: [AwardRecord] // Store award records array
+    
+    init() {
+        self.records = [] // Initialize to an empty array
+        let award1 = AwardRecord(name: "Kelvin", competition: "WWDC Student Challenge", award: "Winner")
+        let award2 = AwardRecord(name: "Jacky", competition: "HKICT Awards", award: "Bronze")
+        self.records.append(award1) // Add initial records
+        self.records.append(award2)
+    }
+    
+    // Return the number of records
+    func count() -> Int {
+        return records.count
+    }
+    
+    // Add a record
+    func add(_ record: AwardRecord) {
+        records.append(record)
+    }
+    
+    // Get a record at a specific index
+    func record(at index: Int) -> AwardRecord {
+        return records[index]
+    }
+    
+    // Remove a record at a specific index
+    func remove(at index: Int) {
+        records.remove(at: index)
+    }
+    
+    // Count the number of gold awards
+    func goldCount() -> Int {
+        return records.filter { $0.award == "Winner" }.count
+    }
+    
+    // Count the number of silver awards
+    func silverCount() -> Int {
+        return records.filter { $0.award == "Silver" }.count
+    }
+    
+    // Count the number of bronze awards
+    func bronzeCount() -> Int {
+        return records.filter { $0.award == "Bronze" }.count
+    }
+}
