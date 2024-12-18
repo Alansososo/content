@@ -1,0 +1,57 @@
+import SwiftUI
+
+struct AddView: View {
+    @Binding var showAdd: Bool
+    @ObservedObject var manager: AwardManager // Change to @ObservedObject
+    @State private var name = ""
+    @State private var competition = ""
+    @State private var award = ""
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                TextField("Name", text: $name)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.bottom, 10)
+
+                TextField("Competition", text: $competition)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.bottom, 10)
+
+                TextField("Award", text: $award)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.bottom, 10)
+
+                Text("Enter either \"Gold\", \"Silver\", or \"Bronze\". Other input will be treated as Merit.")
+                    .padding(.bottom, 20)
+                    .font(.footnote)
+
+                Spacer()
+            }
+            .padding()
+            .navigationBarTitle("Add Award", displayMode: .inline)
+            .navigationBarItems(leading: cancelButton, trailing: saveButton)
+        }
+    }
+
+    private var cancelButton: some View {
+        Button("Cancel") {
+            showAdd = false
+        }
+    }
+
+    private var saveButton: some View {
+        Button("Save") {
+            let validatedAward = validateAward(award)
+            let newRecord = AwardRecord(name: name, competition: competition, award: validatedAward)
+            manager.add(newRecord)
+            showAdd = false
+        }
+        .disabled(name.isEmpty || competition.isEmpty || award.isEmpty)
+    }
+
+    private func validateAward(_ award: String) -> String {
+        let validAwards = ["Gold", "Silver", "Bronze"]
+        return validAwards.contains(award) ? award : "Merit"
+    }
+}
