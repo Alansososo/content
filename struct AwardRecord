@@ -1,0 +1,8 @@
+import Foundation
+
+struct AwardRecord: Identifiable {
+    var id: String = UUID().uuidString
+    var name: String
+    var competition: String
+    var award: String
+}
