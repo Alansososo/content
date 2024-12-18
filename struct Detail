@@ -1,0 +1,73 @@
+import SwiftUI
+
+struct DetailView: View {
+    var award: AwardRecord?
+    @Environment(\.presentationMode) var presentationMode // Access to the presentation mode
+    
+    var body: some View {
+        VStack {
+            if let award = award {
+                // Display name at the top with a smaller font
+                Text(award.name)
+                    .font(.headline) // Changed to a smaller font size
+                    .padding(.top)
+
+                // Display competition with the same font size and darker color
+                Text(award.competition)
+                    .font(.headline) // Same font size as the name
+                    .foregroundColor(.black) // Dark color for the award title
+                    .padding(.top)
+
+                Spacer() // Push the emoji down to the center
+
+                // Display emoji based on award type at the center
+                Text(getEmoji(for: award.award))
+                    .font(.largeTitle)
+                    .padding()
+
+                Spacer() // Optional: Add space below the emoji if needed
+            } else {
+                Text("Award not found")
+                    .font(.headline)
+                    .foregroundColor(.red)
+            }
+        }
+        .padding()
+        .navigationBarTitle("", displayMode: .inline) // Set an empty title for the navigation bar
+        .navigationBarBackButtonHidden(true) // Hide the default back button
+        .navigationBarItems(leading: backButton) // Add custom back button
+    }
+    
+    // Custom back button with arrow
+    private var backButton: some View {
+        HStack {
+            Button(action: {
+                // Navigate back to the previous view
+                presentationMode.wrappedValue.dismiss() // Dismiss the current view
+            }) {
+                HStack {
+                    Image(systemName: "chevron.left") // Add back arrow
+                    Text("Honour Records")
+                        .font(.headline)
+                        .foregroundColor(.blue)
+                }
+            }
+        }
+    }
+    
+    // Function to return the corresponding emoji
+    private func getEmoji(for award: String) -> String {
+        switch award {
+        case "Winner":
+            return "🏅"
+        case "Gold":
+            return "🥇"
+        case "Silver":
+            return "🥈"
+        case "Bronze":
+            return "🥉"
+        default:
+            return "🏆" // Default case if needed
+        }
+    }
+}
