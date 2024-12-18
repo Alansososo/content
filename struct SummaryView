@@ -1,0 +1,90 @@
+import SwiftUI
+
+struct SummaryView: View {
+    @State private var goldCount: Int
+    @State private var silverCount: Int
+    @State private var bronzeCount: Int
+
+    var totalMedals: Int {
+        return goldCount + silverCount + bronzeCount
+    }
+
+    @Environment(\.presentationMode) var presentationMode
+
+    // Custom initializer to accept medal counts
+    init(goldCount: Int, silverCount: Int, bronzeCount: Int) {
+        self._goldCount = State(initialValue: goldCount)
+        self._silverCount = State(initialValue: silverCount)
+        self._bronzeCount = State(initialValue: bronzeCount)
+    }
+
+    var body: some View {
+        VStack {
+            Spacer() // Top spacer for centering
+            
+            // Medal podium graphic
+            HStack(spacing: 0) {
+                // Silver medal area
+                VStack {
+                    Text("\(silverCount)")
+                        .font(.largeTitle)
+                        .padding(.top, 105)
+                    Rectangle()
+                        .fill(Color.gray)
+                        .frame(width: 100, height: 100)
+                        .overlay(Text("🥈").font(.largeTitle))
+                }
+                
+                // Gold medal area
+                VStack {
+                    Text("\(goldCount)")
+                        .font(.largeTitle)
+                        .padding(.top, 5)
+                    Rectangle()
+                        .fill(Color.gray)
+                        .frame(width: 100, height: 200)
+                        .overlay(Text("🥇").font(.largeTitle).padding(.top, -60))
+                }
+
+                // Bronze medal area
+                VStack {
+                    Text("\(bronzeCount)")
+                        .font(.largeTitle)
+                        .padding(.top, 105)
+                    Rectangle()
+                        .fill(Color.gray)
+                        .frame(width: 100, height: 100)
+                        .overlay(Text("🥉").font(.largeTitle))
+                }
+            }
+            .padding(.top, 20)
+
+            // Bottom total area
+            HStack {
+                Text("🏅") // Medal icon on the left
+                    .font(.title)
+                Spacer()
+                Text("\(totalMedals)") // Total on the right
+                    .font(.title)
+                    .foregroundColor(.primary)
+            }
+            .padding(.horizontal)
+            .padding(.bottom)
+            
+            Spacer() // Bottom spacer for centering
+        }
+        .padding()
+        .background(Color(UIColor.systemGroupedBackground))
+        .cornerRadius(20)
+        .shadow(radius: 10)
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    if value.translation.height > 50 {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+        )
+        .edgesIgnoringSafeArea(.bottom)
+    }
+}
