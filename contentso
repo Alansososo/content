@@ -1,0 +1,56 @@
+import SwiftUI
+
+struct ContentView: View {
+    @StateObject var manager = AwardManager()
+    @State private var showAdd = false
+    @State private var showSummary = false
+
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(0..<manager.count(), id: \.self) { i in
+                    let award = manager.record(at: i)
+                    NavigationLink(destination: DetailView(award: award)) {
+                        HStack {
+                            Text(award.name)
+                            Spacer()
+                            Text(award.award)
+                                .foregroundColor(.gray)
+                        }
+                        .contentShape(Rectangle())
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        showSummary.toggle() // Toggle display of SummaryView
+                    }) {
+                        Text("Summary")
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showAdd.toggle() }) {
+                        Text("+")
+                    }
+                }
+                ToolbarItem(placement: .principal) {
+                    Text("Honour Records")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                }
+            }
+            .sheet(isPresented: $showAdd) {
+                AddView(showAdd: $showAdd, manager: manager) // Pass manager directly
+            }
+            .fullScreenCover(isPresented: $showSummary) {
+                // Calculate medal counts before presenting SummaryView
+                let goldCount = manager.goldCount() // Assuming you have a method to get gold count
+                let silverCount = manager.silverCount() // Method for silver count
+                let bronzeCount = manager.bronzeCount() // Method for bronze count
+
+                SummaryView(goldCount: goldCount, silverCount: silverCount, bronzeCount: bronzeCount) // Pass counts to SummaryView
+            }
+        }
+    }
+}
